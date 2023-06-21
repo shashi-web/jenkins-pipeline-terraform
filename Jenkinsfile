@@ -1,3 +1,13 @@
+
+def sshCommand(command) {
+  withCredentials([sshUserPrivateKey(credentialsId: '03007e71-c7b5-4c86-8466-962176e6d5bb', keyFileVariable: 'KEY_FILE')]) {
+    return sh(script: "ssh -i \$KEY_FILE ec2-user@54.158.216.25 ${command}", returnStdout: true).trim()
+    }
+}
+
+
+
+
 pipeline {
   agent any
 
@@ -27,11 +37,6 @@ pipeline {
     stage('Check Dependencies') {
       steps {
         script {
-          def sshCommand(command) {
-            withCredentials([sshUserPrivateKey(credentialsId: '03007e71-c7b5-4c86-8466-962176e6d5bb', keyFileVariable: 'KEY_FILE')]) {
-              return sh(script: "ssh -i \$KEY_FILE ec2-user@54.158.216.25 ${command}", returnStdout: true).trim()
-            }
-          }
 
           def curlInstalled = sshCommand('command -v curl') == 0
           def jqInstalled = sshCommand('command -v jq') == 0
@@ -57,11 +62,6 @@ pipeline {
     stage('Get Latest Terraform Version') {
       steps {
         script {
-          def sshCommand(command) {
-            withCredentials([sshUserPrivateKey(credentialsId: '03007e71-c7b5-4c86-8466-962176e6d5bb', keyFileVariable: 'KEY_FILE')]) {
-              return sh(script: "ssh -i \$KEY_FILE ec2-user@54.158.216.25 ${command}", returnStdout: true).trim()
-            }
-          }
 
           def latestVersion = sshCommand("curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r '.current_version'")
           echo "Latest Terraform version: ${latestVersion}"
@@ -72,11 +72,6 @@ pipeline {
     stage('Infrastructure Provisioning & Deployment') {
       steps {
         script {
-          def sshCommand(command) {
-            withCredentials([sshUserPrivateKey(credentialsId: '03007e71-c7b5-4c86-8466-962176e6d5bb', keyFileVariable: 'KEY_FILE')]) {
-              return sh(script: "ssh -i \$KEY_FILE ec2-user@54.158.216.25 ${command}", returnStdout: true).trim()
-            }
-          }
 
           sshCommand('terraform init')
           sshCommand('terraform plan -out=tfplan')
