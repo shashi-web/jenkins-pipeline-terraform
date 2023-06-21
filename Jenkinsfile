@@ -43,14 +43,14 @@ pipeline {
 
             if (!curlInstalled) {
               echo "Installing curl..."
-              sh 'apt-get update'
-              sh 'apt-get install -y curl'
+              sh 'yum update'
+              sh 'yum install -y curl'
             }
 
             if (!jqInstalled) {
               echo "Installing jq..."
-              sh 'apt-get update'
-              sh 'apt-get install -y jq'
+              sh 'yum update'
+              sh 'yum install -y jq'
             }
           }
         }
