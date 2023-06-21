@@ -21,7 +21,7 @@ pipeline {
     
     stage('Terraform') {
       steps {
-        sh 'wget https://releases.hashicorp.com/terraform/latest/terraform_latest_linux_amd64.zip'
+        sh 'curl -LO https://releases.hashicorp.com/terraform/latest/terraform_latest_linux_amd64.zip'
         sh 'unzip terraform_latest_linux_amd64.zip'
         sh 'mv terraform /usr/local/bin/'
         sh 'terraform --version'
