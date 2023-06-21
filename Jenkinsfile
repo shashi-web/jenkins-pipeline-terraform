@@ -1,84 +1,32 @@
-
-def sshCommand(command) {
-  withCredentials([sshUserPrivateKey(credentialsId: '03007e71-c7b5-4c86-8466-962176e6d5bb', keyFileVariable: 'KEY_FILE')]) {
-    return sh(script: "ssh -i \$KEY_FILE ec2-user@54.158.216.25 ${command}", returnStdout: true).trim()
-    }
-}
-
-
-
-
 pipeline {
-  agent any
-
-  parameters {
-    string(name: 'access_key', description: 'Access Key')
-    string(name: 'secret_key', description: 'Secret Key')
-    string(name: 'public_key', description: 'Public Key')
-    choice(name: 'cidr_block', choices: ['10.0.0.0/24'], description: 'CIDR Block')
-    choice(name: 'subnet_cidr_block', choices: ['10.0.0.0/25'], description: 'Subnet CIDR Block')
-    choice(name: 'image_name', choices: ['ami-022e1a32d3f742bd8'], description: 'Image Name')
-    choice(name: 'script_file', choices: ['nginx-entry-script.sh'], description: 'Script File')
-    choice(name: 'server_name', choices: ['jenkins'], description: 'Server Name')
+  agent {
+    docker {
+      image 'hashicorp/terraform:latest'
+    }
   }
-
+  
+  environment {
+    TF_VAR_access_key       = credentials('bd44ff92-7e19-4b0a-be0b-ce2eb8462d2f')
+    TF_VAR_secret_key       = credentials('59f3fee6-69ce-47c6-bf36-d9dc565a4c77')
+    TF_VAR_public_key       = credentials('baee9f41-8582-48bc-9493-573e2e9f5855')
+    TF_VAR_cidr_block       = '10.0.0.0/24'
+    TF_VAR_subnet_cidr_block = '10.0.0.0/25'
+    TF_VAR_image_name       = 'ami-022e1a32d3f742bd8'
+    TF_VAR_script_file      = 'nginx-entry-script.sh'
+    TF_VAR_server_name      = 'terraform'
+  }
+  
   stages {
-    stage('Source Code Retrieval') {
+    stage('Checkout') {
       steps {
-        // Checkout source code from version control system (e.g., Git)
-        git(
-          url: 'https://github.com/shashi-web/terraform-27-06-2023.git',
-          credentialsId: '3ee1c4bc-b18e-4c20-9500-b1bac41e92d7',
-          branch: 'master'
-        )
+        git 'https://github.com/shashi-web/terraform-27-06-2023/tree/master'
       }
     }
-
-    stage('Check Dependencies') {
+    
+    stage('Terraform') {
       steps {
-        script {
-
-          def curlInstalled = sshCommand('command -v curl') == 0
-          def jqInstalled = sshCommand('command -v jq') == 0
-
-          echo "curl is installed: ${curlInstalled}"
-          echo "jq is installed: ${jqInstalled}"
-
-          if (!curlInstalled) {
-            echo "Installing curl..."
-            sshCommand('apt-get update')
-            sshCommand('apt-get install -y curl')
-          }
-
-          if (!jqInstalled) {
-            echo "Installing jq..."
-            sshCommand('apt-get update')
-            sshCommand('apt-get install -y jq')
-          }
-        }
-      }
-    }
-
-    stage('Get Latest Terraform Version') {
-      steps {
-        script {
-
-          def latestVersion = sshCommand("curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r '.current_version'")
-          echo "Latest Terraform version: ${latestVersion}"
-        }
-      }
-    }
-
-    stage('Infrastructure Provisioning & Deployment') {
-      steps {
-        script {
-
-          sshCommand('terraform init')
-          sshCommand('terraform plan -out=tfplan')
-
-          input message: 'Deploy infrastructure?', ok: 'Deploy'
-          sshCommand('terraform apply tfplan')
-        }
+        sh 'terraform init'
+        sh 'terraform apply -auto-approve=false'
       }
     }
   }
