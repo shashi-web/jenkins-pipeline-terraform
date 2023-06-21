@@ -19,7 +19,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git 'https://github.com/shashi-web/terraform-27-06-2023/tree/master'
+        git 'https://github.com/shashi-web/terraform-27-06-2023.git'
       }
     }
     
