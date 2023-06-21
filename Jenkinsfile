@@ -37,14 +37,14 @@ pipeline {
 
             if (!curlInstalled) {
               echo "Installing curl..."
-              sh 'sudo apt-get update'
-              sh 'sudo apt-get install -y curl'
+              sh 'apt-get update'
+              sh 'apt-get install -y curl'
             }
 
             if (!jqInstalled) {
               echo "Installing jq..."
-              sh 'sudo apt-get update'
-              sh 'sudo apt-get install -y jq'
+              sh 'apt-get update'
+              sh 'apt-get install -y jq'
             }
           }
         }
