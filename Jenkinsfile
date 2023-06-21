@@ -1,6 +1,17 @@
 pipeline {
   agent any
 
+  parameters {
+    string(name: 'access_key', description: 'Access Key')
+    string(name: 'secret_key', description: 'Secret Key')
+    string(name: 'public_key', description: 'Public Key')
+    choice(name: 'cidr_block', choices: ['10.0.0.0/24'], description: 'CIDR Block')
+    choice(name: 'subnet_cidr_block', choices: ['10.0.0.0/25'], description: 'Subnet CIDR Block')
+    choice(name: 'image_name', choices: ['ami-022e1a32d3f742bd8'], description: 'Image Name')
+    choice(name: 'script_file', choices: ['nginx-entry-script.sh'], description: 'Script File')
+    choice(name: 'server_name', choices: ['jenkins'], description: 'Server Name')
+  }
+
   stages {
     stage('Source Code Retrieval') {
       steps {
