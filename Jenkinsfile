@@ -22,8 +22,10 @@ pipeline {
     stage('Terraform Setup') {
       steps {
         sh 'curl -LO https://releases.hashicorp.com/terraform/latest/terraform_latest_linux_amd64.zip'
-        sh 'dnf install -y java-1.8.0-openjdk' // Install Java Development Kit (JDK)
-        sh 'jar xvf terraform_latest_linux_amd64.zip' // Extract the contents of the ZIP file
+        sh 'apt-get update'
+        sh 'apt-get install -y unzip'
+        sh 'apt-get install -y openjdk-8-jdk' // Install Java Development Kit (JDK)
+        sh 'unzip terraform_latest_linux_amd64.zip' // Extract the contents of the ZIP file
         sh 'chmod +x terraform'
         sh 'mv terraform /usr/local/bin/'
         sh 'rm terraform_latest_linux_amd64.zip'
