@@ -1,9 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'hashicorp/terraform:latest'
-    }
-  }
+  agent any
   
   environment {
     TF_VAR_access_key       = credentials('bd44ff92-7e19-4b0a-be0b-ce2eb8462d2f')
@@ -25,6 +21,10 @@ pipeline {
     
     stage('Terraform') {
       steps {
+        sh 'wget https://releases.hashicorp.com/terraform/latest/terraform_latest_linux_amd64.zip'
+        sh 'unzip terraform_latest_linux_amd64.zip'
+        sh 'mv terraform /usr/local/bin/'
+        sh 'terraform --version'
         sh 'terraform init'
         sh 'terraform apply -auto-approve=false'
       }
