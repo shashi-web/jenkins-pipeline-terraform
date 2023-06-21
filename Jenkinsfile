@@ -1,6 +1,18 @@
 pipeline {
   agent any
 
+
+  parameters {
+    string(name: 'access_key', description: 'Access Key')
+    string(name: 'secret_key', description: 'Secret Key')
+    string(name: 'public_key', description: 'Public Key')
+    string(name: 'cidr_block', description: 'CIDR Block')
+    string(name: 'subnet_cidr_block', description: 'Subnet CIDR Block')
+    string(name: 'image_name', description: 'Image Name')
+    string(name: 'script_file', description: 'Script File')
+    string(name: 'server_name', description: 'Server Name')
+  }
+
   stages {
     stage('Source Code Retrieval') {
       steps {
