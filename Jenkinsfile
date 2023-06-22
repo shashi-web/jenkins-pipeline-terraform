@@ -2,9 +2,9 @@ pipeline {
   agent any
   
   environment {
-    TF_VAR_access_key       = credentials('008174a4-606e-4445-afe9-fe914e0a9d75')
-    TF_VAR_secret_key       = credentials('d54234e1-00c9-403a-8f2b-aaae2d0f6d01')
-    TF_VAR_public_key       = credentials('97ddf096-c176-4647-8d93-d9b3228cc29b')
+    TF_VAR_access_key       = credentials('d47f9240-03ab-410f-b9ba-836ee04049b2')
+    TF_VAR_secret_key       = credentials('5933702e-dd43-4b00-a19b-f025894716a2')
+    TF_VAR_public_key       = credentials('557a1ecb-7f51-420e-b7b9-393ed0135028')
     TF_VAR_cidr_block       = '10.0.0.0/24'
     TF_VAR_subnet_cidr_block = '10.0.0.0/25'
     TF_VAR_image_name       = 'ami-022e1a32d3f742bd8'
