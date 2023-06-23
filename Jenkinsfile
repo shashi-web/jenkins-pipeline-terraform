@@ -33,8 +33,8 @@ pipeline {
                     } else {
                         sh 'sudo apt-get update'
                         sh 'sudo apt-get install unzip curl -y'
-                        sh 'sudo curl -LO https://releases.hashicorp.com/terraform/0.14.10/terraform_0.14.10_linux_amd64.zip'
-                        sh 'sudo unzip terraform_0.14.10_linux_amd64.zip'
+                        sh 'sudo curl -LO https://releases.hashicorp.com/terraform/1.5.1/terraform_0.14.10_linux_amd64.zip'
+                        sh 'sudo unzip terraform_1.5.1_linux_amd64.zip'
                         sh 'sudo mv terraform /usr/local/bin/'
                         sh 'terraform --version'
                     }
