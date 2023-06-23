@@ -23,22 +23,34 @@ pipeline {
             }
         }
         
-        stage('Check Terraform Installation') {
+        stage('Check and Install Terraform') {
             steps {
                 script {
-                    def tfInstalled = sh(returnStatus: true, script: 'terraform --version') == 0
-                    if (tfInstalled) {
-                        echo "Terraform is already installed"
+                    def installedVersion = sh(returnStdout: true, script: 'terraform --version | awk \'{print $2}\'').trim()
+                    def latestVersion = sh(returnStdout: true, script: 'curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r \'.current_version\'').trim()
+                    
+                    if (installedVersion.startsWith('Terraform')) {
+                        if (installedVersion.contains(latestVersion)) {
+                            echo "Terraform is already installed in the latest version: ${installedVersion}"
+                        } else {
+                            echo "Installed version of Terraform (${installedVersion}) is not the latest. Installing the latest version (${latestVersion})..."
+                            sh 'curl -LO "https://releases.hashicorp.com/terraform/${latestVersion}/terraform_${latestVersion}_linux_amd64.zip"'
+                            sh 'unzip "terraform_${latestVersion}_linux_amd64.zip"'
+                            sh 'sudo mv terraform /usr/local/bin/'
+                            sh 'rm "terraform_${latestVersion}_linux_amd64.zip"'
+                            echo "Latest version of Terraform (${latestVersion}) has been installed"
+                        }
                     } else {
-                        echo "Installing Terraform..."
-                        sh 'curl -LO https://releases.hashicorp.com/terraform/latest/terraform_latest_linux_amd64.zip'
-                        sh 'unzip terraform_latest_linux_amd64.zip'
+                        echo "Terraform is not installed. Installing the latest version (${latestVersion})..."
+                        sh 'curl -LO "https://releases.hashicorp.com/terraform/${latestVersion}/terraform_${latestVersion}_linux_amd64.zip"'
+                        sh 'unzip "terraform_${latestVersion}_linux_amd64.zip"'
                         sh 'sudo mv terraform /usr/local/bin/'
-                        sh 'rm terraform_latest_linux_amd64.zip'
+                        sh 'rm "terraform_${latestVersion}_linux_amd64.zip"'
+                        echo "Latest version of Terraform (${latestVersion}) has been installed"
                     }
                 }
             }
-        }   
+        }  
         
         stage('Execute Terraform Commands') {
             steps {
