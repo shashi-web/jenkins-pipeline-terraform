@@ -26,16 +26,16 @@ pipeline {
         stage('Install Terraform') {
             steps {
                 script {
-                    def installedVersion = sh(returnStdout: true, script: 'terraform --version | awk \'{print $2}\'').trim()
+                    // def installedVersion = sh(returnStdout: true, script: 'terraform --version | awk \'{print $2}\'').trim()
                     
-                    if (installedVersion.startsWith('Terraform')) {
-                        echo "Terraform is already installed in version: ${installedVersion}"
-                    } else {
-                        sh 'sudo apt-get update'
-                        sh 'sudo apt-get install unzip curl -y'
-                        sh 'sudo curl -LO https://releases.hashicorp.com/terraform/1.5.1/terraform_0.14.10_linux_amd64.zip'
-                        sh 'sudo unzip terraform_1.5.1_linux_amd64.zip'
-                        sh 'sudo mv terraform /usr/local/bin/'
+                    // if (installedVersion.startsWith('Terraform')) {
+                    //     echo "Terraform is already installed in version: ${installedVersion}"
+                    // } else {
+                    //     sh 'sudo apt-get update'
+                    //     sh 'sudo apt-get install unzip curl -y'
+                    //     sh 'sudo curl -LO https://releases.hashicorp.com/terraform/1.5.1/terraform_0.14.10_linux_amd64.zip'
+                    //     sh 'sudo unzip terraform_1.5.1_linux_amd64.zip'
+                    //     sh 'sudo mv terraform /usr/local/bin/'
                         sh 'terraform --version'
                     }
                 }
