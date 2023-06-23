@@ -37,7 +37,7 @@ pipeline {
                     //     sh 'sudo unzip terraform_1.5.1_linux_amd64.zip'
                     //     sh 'sudo mv terraform /usr/local/bin/'
                         sh 'terraform --version'
-                    }
+                    
                 }
             }
         }
