@@ -23,16 +23,22 @@ pipeline {
             }
         }
         
-        stage('Install Terraform') {
+        stage('Check Terraform Installation') {
             steps {
-                sh 'sudo apt-get update'
-                sh 'sudo apt-get install unzip curl -y'
-                sh 'sudo curl -LO https://releases.hashicorp.com/terraform/0.14.10/terraform_0.14.10_linux_amd64.zip'
-                sh 'sudo unzip terraform_0.14.10_linux_amd64.zip'
-                sh 'sudo mv terraform /usr/local/bin/'
-                sh 'terraform --version'
+                script {
+                    def tfInstalled = sh(returnStatus: true, script: 'terraform --version') == 0
+                    if (tfInstalled) {
+                        echo "Terraform is already installed"
+                    } else {
+                        echo "Installing Terraform..."
+                        sh 'curl -LO https://releases.hashicorp.com/terraform/latest/terraform_latest_linux_amd64.zip'
+                        sh 'unzip terraform_latest_linux_amd64.zip'
+                        sh 'sudo mv terraform /usr/local/bin/'
+                        sh 'rm terraform_latest_linux_amd64.zip'
+                    }
+                }
             }
-        }
+        }   
         
         stage('Execute Terraform Commands') {
             steps {
