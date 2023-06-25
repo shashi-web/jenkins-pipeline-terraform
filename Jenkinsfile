@@ -48,6 +48,7 @@ pipeline {
                     action = action.toLowerCase()
 
                     if (action == 'apply') {
+                        sh 'terraform plan'
                         // Prompt for confirmation before applying the Terraform changes
                         input(
                             message: 'Do you want to proceed with Terraform apply?',
@@ -62,6 +63,7 @@ pipeline {
                             echo 'Apply operation aborted by user.'
                         }
                     } else if (action == 'destroy') {
+                        sh 'terraform plan -destroy'
                         // Prompt for confirmation before destroying resources
                         input(
                             message: 'Are you sure you want to destroy the resources?',
