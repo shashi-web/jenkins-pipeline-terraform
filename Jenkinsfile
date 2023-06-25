@@ -37,16 +37,15 @@ pipeline {
                 sh 'terraform init'
                 sh 'terraform plan'
 
-                // Prompt for action choice (Apply or Destroy)
-                input(
-                    message: 'Select the action to perform:',
-                    parameters: [
-                        choice(name: 'ACTION', choices: 'Apply\nDestroy', description: 'Choose the action')
-                    ]
-                )
-
                 script {
-                    def action = env.ACTION ?: params.ACTION?.toLowerCase()
+                    def action = input(
+                        message: 'Select the action to perform:',
+                        parameters: [
+                            choice(name: 'ACTION', choices: ['Apply', 'Destroy'], description: 'Choose the action')
+                        ]
+                    )
+
+                    action = action.toLowerCase()
 
                     if (action == 'apply') {
                         // Prompt for confirmation before applying the Terraform changes
