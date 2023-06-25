@@ -35,7 +35,6 @@ pipeline {
         stage('Execute Terraform Commands') {
             steps {
                 sh 'terraform init'
-                sh 'terraform plan'
 
                 script {
                     def action = input(
@@ -50,14 +49,14 @@ pipeline {
                     if (action == 'apply') {
                         sh 'terraform plan'
                         // Prompt for confirmation before applying the Terraform changes
-                        input(
+                        def confirmApply = input(
                             message: 'Do you want to proceed with Terraform apply?',
                             parameters: [
                                 booleanParam(defaultValue: false, description: 'Confirm apply', name: 'confirmApply')
                             ]
                         )
 
-                        if (params.confirmApply) {
+                        if (confirmApply == true) {
                             sh 'terraform apply -auto-approve'
                         } else {
                             echo 'Apply operation aborted by user.'
@@ -65,14 +64,14 @@ pipeline {
                     } else if (action == 'destroy') {
                         sh 'terraform plan -destroy'
                         // Prompt for confirmation before destroying resources
-                        input(
+                        def confirmDestroy = input(
                             message: 'Are you sure you want to destroy the resources?',
                             parameters: [
                                 booleanParam(defaultValue: false, description: 'Confirm destroy', name: 'confirmDestroy')
                             ]
                         )
 
-                        if (params.confirmDestroy) {
+                        if (confirmDestroy == true) {
                             sh 'terraform destroy -auto-approve'
                         } else {
                             echo 'Destroy operation aborted by user.'
