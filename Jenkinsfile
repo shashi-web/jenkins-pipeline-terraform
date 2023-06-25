@@ -27,6 +27,7 @@ pipeline {
             steps {
                 script {
                     // Install Terraform code
+                    sh 'terraform --version'
                 }
             }
         }
