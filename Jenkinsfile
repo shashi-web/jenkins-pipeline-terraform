@@ -46,7 +46,7 @@ pipeline {
                 )
 
                 script {
-                    def action = params.ACTION?.toLowerCase()
+                    def action = env.ACTION ?: params.ACTION?.toLowerCase()
 
                     if (action == 'apply') {
                         // Prompt for confirmation before applying the Terraform changes
